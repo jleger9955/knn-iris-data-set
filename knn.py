@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import Counter
 
 
 class Knn:
@@ -14,15 +14,7 @@ class Knn:
     def predict(self, vector, k):
         lengths = [(vector.scale(-1) + v).norm() for v in self.vectors]
         lenspec = [(length, self.species[i]) for i, length in enumerate(lengths)]
-        final = sorted(lenspec, key=lambda t: t[0])[:k]
-        prediction = final[0][1]
-        ''' The code below is only needed if you expect more than one species in the "final" list variable
-        count_spec = defaultdict(int)
-        for spc in final:
-            count_spec[spc[1]] += 1
-        prediction = ''
-        for spc, cnt in count_spec.items():
-            if count_spec[spc] >= 2:
-                prediction = spc
-        '''
-        return prediction
+        tuples = sorted(lenspec, key=lambda t: t[0])[:k]
+        species = [t[1] for t in tuples]
+        counter = Counter(species)
+        return counter.most_common(1)[0][0]
